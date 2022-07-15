@@ -11,15 +11,15 @@ const { Server } = require('socket.io');
 const io = new Server(expressServer);
 
 
-const buyNsp = io.of('/buy');
-const sellNsp = io.of('/sell');
-
-buyNsp.on('connection', socket => {
-    buyNsp.emit("MyEvent", 'Hello buy');
-})
-
-sellNsp.on('connection', socket => {
-    sellNsp.emit("MyEvent", 'Hello sell');
+io.on('connection', (socket) => {
+    socket.join('kitchen-room');
+    const sizeOfKitchen = io.sockets.adapter.rooms.get("kitchen-room").size;
+    io.sockets.in('kitchen-room').emit('cooking', "fried rice cooking = " + sizeOfKitchen);
+    io.sockets.in('kitchen-room').emit('boiling', "boiling water")
+    socket.join('bed-room');
+    io.sockets.in('bed-room').emit('sleep', "i am taking rest")
+    io.sockets.in('bed-room').emit('rest', "i am taking rest")
+    // socket.join('dining-room');
 })
 
 
